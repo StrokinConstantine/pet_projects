@@ -15,19 +15,13 @@ section .text
 %define NULL_SYM    0x0
 
 ; System calls
-%define SYS_READ  0
+%define SYS_READ 0
 %define SYS_WRITE 1
 %define SYS_EXIT  60
 
 ; File descriptors
-%define STDIN     0
-%define STDOUT    1
-
-
-
-
-
-
+%define STDIN_FILE_DESCRIPTOR 0
+%define STDOUT_FILE_DESCRIPTOR 1
 
 
 global exit
@@ -79,30 +73,15 @@ print_newline_character_to_stdout:
 	call print_character_to_stdout
 	ret
 	
-	
-	 
-
-
-
 
 print_uint_in_decimal_format:
 
-
-
     mov rax, rdi  
-
-
-	
     mov rcx, rsp  
-	
 	sub rsp, 32 	
-	
-	 mov rbx, 10 
+	mov rbx, 10 
 	dec rcx
     mov byte[ rcx ], 0  
-	
-
-
     ; Check for zero
     test rax, rax
     jnz .convert_uint_to_decimal_string            ; If rax is not zero, start converting
@@ -129,68 +108,4 @@ print_uint_in_decimal_format:
 	mov rdi, rcx
 	call print_null_terminated_string_to_stdout
 	add rsp, 32
-	ret 
-
-
-
-
-
-print_uint:
-  mov rax, rdi    ; rax <- uint to print
-  mov rcx, 10     ; rcx: divider
-  mov r11, rsp    ; Save rsp to r11
-  ; uint from rdi can be maximum 20 chars
-  sub rsp, 32     ; Stack should be 16 bytes aligned for x64 ABI, so we need to allocate 32 bytes
-  dec r11
-  mov byte [r11], NULL_SYM  ; Null-terminator
-  .loop:
-    xor rdx, rdx  ; Clear division remainder for iter
-    div rcx       ; rax /= 10; rdx = rax % 10
-    add dl, '0'   ; rax % 10 to ASCII
-    dec r11
-    mov byte [r11], dl
-    cmp rax, 0
-    jnz .loop     ; if rax / 10 != 0
-  mov rdi, r11    ; rdi <- uint string starts address
-  call print_null_terminated_string_to_stdout
-  add rsp, 32     ; Free used stack data
-  ret
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  ;; Принимает указатель на нуль-терминированную строку, возвращает её длину
-string_length_1:
-  xor rax, rax  ; Clear the length counter
-
-  .counter:
-    ; Checking the current byte is 0
-    cmp byte [rdi + rax], NULL_SYM
-    je .return
-
-    inc rax     ; Go to next byte
-    jmp .counter
-  .return:
-    ret
-
-;; Принимает указатель на нуль-терминированную строку, выводит её в stdout
-print_string:
-  push rdi      ; Save rdi
-  call string_length_1
-  pop rdi       ; Restore rdi
-
-  mov rdx, rax  ; rdx <- string length
-  mov rsi, rdi  ; rsi <- string start address
-
-  mov rax, SYS_WRITE
-  mov rdi, STDOUT
-  syscall
-
-  ret
+	ret

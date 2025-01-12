@@ -19,10 +19,8 @@ _start:
 	mov rdi, 222222
 	
 
-	;and rsp, 0xFFFFFFFFFFFFFFF0 
-	;sub rsp, 32
 	call print_uint
-	;add rsp, 32	
+
 	mov rdi, 222222
 	call print_uint_in_decimal_format
 
@@ -32,32 +30,6 @@ _start:
 	
 	mov rax, 60; exit syscall number
 	SYSCALL; assembly language is case insensitive	
-	
-	
-	
-
-print_null_terminated_string_to_stdout_1:
-
-	;call string_length
-	mov rdx, 5; argument 3, how many bytes to write?
-	mov rsi, rcx; argument 2, where does the string start? 
-	mov rdi, 1; argument 1, file descriptor ( where to write )
-	mov rax, 1; rax holding system call's number. rdi, rsi, rdx, r10, r8 and r9 are used to hold arguments
-	syscall; system call in *nix systems, changes rcx and r11
-	  
-	ret
-
-
-
-
-
-
-
-	
-	;mov rsp, rbp           ; Restore stack pointer
-  ;  pop rbp                ; Restore base pointer
-	;ret 
-	
 	
 
 	
