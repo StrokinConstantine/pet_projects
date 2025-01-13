@@ -31,8 +31,8 @@ global print_character_to_stdout
 global print_newline_character_to_stdout
 global print_uint_in_decimal_format
 
-global print_uint
-
+global print_signed_int_in_decimal_format_to_stdout
+global read_character_from_stdin_and_return_it
 
 exit:
 	mov rax, 60
@@ -72,40 +72,67 @@ print_newline_character_to_stdout:
 	mov rdi, 0xa
 	call print_character_to_stdout
 	ret
-	
 
 print_uint_in_decimal_format:
-
-    mov rax, rdi  
+    mov rax, rdi
     mov rcx, rsp  
-	sub rsp, 32 	
-	mov rbx, 10 
+	sub rsp, 32	
+	mov rbx, 10; divisor 
 	dec rcx
-    mov byte[ rcx ], 0  
-    ; Check for zero
+    mov byte[ rcx ], 0 
     test rax, rax
-    jnz .convert_uint_to_decimal_string            ; If rax is not zero, start converting
-	
-	dec rcx
-    ; handle the case where the input number is 0
-    mov byte[ rcx ], '0'     ; If the number is zero, store '0'
-    jmp .print              ; Jump to print
-	
-.convert_uint_to_decimal_string:
-    ; Convert number to string in reverse order
-    .loop:
-        xor rdx, rdx        ; clear rdx (the remainder)
-               ; divisor
-        div rbx             ; rax = rax / 10, rdx = rax % 10
-      
-		add dl, '0'         ; convert digit to ASCII
+    jnz .convert_uint_to_decimal_string
 		dec rcx
-                  ; move buffer pointer back
-		mov byte[rcx], dl       ; store ASCII character in buffer
-        test rax, rax       ; check if rax is zero
-        jnz .loop           ; repeat if not zero
+		mov byte[ rcx ], '0'
+		jmp .print
+
+.convert_uint_to_decimal_string:
+.convert_uint_to_decimal_string_loop:
+		xor rdx, rdx; clear rdx (the remainder)
+        div rbx; rax = rax / 10, rdx = rax % 10
+		add dl, '0'
+		dec rcx
+		mov byte[rcx], dl
+        test rax, rax
+        jnz .convert_uint_to_decimal_string_loop
 .print:
 	mov rdi, rcx
 	call print_null_terminated_string_to_stdout
 	add rsp, 32
+	ret
+	
+	
+
+print_signed_int_in_decimal_format_to_stdout:
+	cmp rdi, 0
+	jge .positive_argument_case
+	push rdi
+	mov rdi, '-'
+	call print_character_to_stdout
+	pop rdi
+	neg rdi
+.positive_argument_case:
+	call print_uint_in_decimal_format
+	ret
+	
+	
+read_character_from_stdin_and_return_it:
+	mov rcx, rsp
+	sub rsp, 16
+	dec rcx
+        ; file descriptor 0 (stdin)
+    mov rsi, rcx     ; pointer to the buffer
+    mov rdx, 1 
+
+    mov rax, 0
+    mov rdi, 0
+	
+	push rcx
+	syscall
+
+	pop rcx
+	mov rax, 0
+	mov al, byte[ rcx ]
+
+	add rsp, 16
 	ret
