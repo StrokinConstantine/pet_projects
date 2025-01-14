@@ -34,6 +34,8 @@ global print_uint_in_decimal_format
 global print_signed_int_in_decimal_format_to_stdout
 global read_character_from_stdin_and_return_it
 
+global read_word_from_stdin_into_buffer
+
 exit:
 	mov rax, 60
 	syscall
@@ -135,4 +137,66 @@ read_character_from_stdin_and_return_it:
 	mov al, byte[ rcx ]
 
 	add rsp, 16
+	ret
+	
+read_word_from_stdin_into_buffer:
+
+	push r12
+	push r13
+	
+	mov r12, rdi
+	mov r13, rsi
+	
+	;rdi - buffer addr, rsi - size;
+
+.skip_leading_spaces:
+	call read_character_from_stdin_and_return_it
+	; rax - char
+	cmp al, 0x20; space character
+	je .skip_leading_spaces
+	cmp al, 0x9; tabulation character
+	je .skip_leading_spaces
+	cmp al, 0x10; line break character
+	je .skip_leading_spaces
+
+	mov rcx, -1
+	jmp .skip_character_reading
+.read_word:
+	push rcx
+	call read_character_from_stdin_and_return_it
+	pop rcx
+.skip_character_reading:
+
+	cmp al, 0
+	je .end_of_word
+	cmp al, 0x20; space character
+	je .end_of_word
+	cmp al, 0x9; tabulation character
+	je .end_of_word
+	cmp al, 0x10; line break character
+	je .end_of_word
+	
+	inc rcx
+	inc rcx
+	cmp rcx, r13
+	je .word_is_too_big
+	dec rcx
+	
+	mov byte[ r12 + rcx ], al
+	
+	jmp .read_word
+	
+	
+.end_of_word:
+	mov byte[ r12 + rcx ], 0
+	mov rax, r12
+	
+	pop r13
+	pop r12
+	ret
+	
+.word_is_too_big:
+	mov rax, 0
+	pop r13
+	pop r12
 	ret

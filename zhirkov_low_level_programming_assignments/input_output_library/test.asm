@@ -16,22 +16,33 @@ extern exit
 extern print_signed_int_in_decimal_format_to_stdout
 extern read_character_from_stdin_and_return_it
 
+extern read_word_from_stdin_into_buffer
+
 global _start
 
 _start:
 
+    mov rcx, rsp  
+	sub rsp, 64	
+
+	
 
 
 	
-	
-	
-	call read_character_from_stdin_and_return_it
 
+	lea rdi, [ rcx - 32 ]
+	mov rsi, 16
+	push rcx
+	call read_word_from_stdin_into_buffer
+	pop rcx
 	
+	
+	lea rdi, [ rcx - 32 ]
+	call string_length
 	mov rdi, rax
-	call print_signed_int_in_decimal_format_to_stdout
+	call print_uint_in_decimal_format
 	
-	
+	add rsp, 64
 	
 	xor rdi, rdi
 	call exit
