@@ -36,6 +36,14 @@ global read_character_from_stdin_and_return_it
 
 global read_word_from_stdin_into_buffer
 
+global parse_null_terminated_string_to_unsigned_integer
+global parse_null_terminated_string_to_signed_integer
+global parse_int
+
+global string_equals
+global string_copy
+
+
 exit:
 	mov rax, 60
 	syscall
@@ -188,9 +196,9 @@ read_word_from_stdin_into_buffer:
 	
 	
 .end_of_word:
-	mov byte[ r12 + rcx ], 0
+	mov byte[ r12 + rcx + 1 ], 0
 	mov rax, r12
-	
+	mov rbx, rcx
 	pop r13
 	pop r12
 	ret
@@ -200,3 +208,113 @@ read_word_from_stdin_into_buffer:
 	pop r13
 	pop r12
 	ret
+
+
+parse_null_terminated_string_to_unsigned_integer:
+	xor rax, rax
+	xor rcx, rcx
+	xor rdx, rdx
+	mov r11, 10
+	.parse_loop:
+		mov cl, byte[ rdi + rcx ]
+		sub cl, '0'; conversion from ASCII code to integer
+		jl .return_because_character_is_not_a_digit
+		cmp cl, 9
+		jg .return_because_character_is_not_a_digit
+		push rdx; mul affects rdx
+		mul r11; rax *= 10
+		pop rdx
+		add rax, rcx
+		inc rdx
+		jmp .parse_loop
+.return_because_character_is_not_a_digit:
+	ret
+
+	
+parse_null_terminated_string_to_signed_integer:
+	cmp byte[ rdi ], '-'
+	je .parse_int
+	jne .parse_uint
+
+.parse_int:
+	inc rdi
+	;push rdi
+	call parse_null_terminated_string_to_unsigned_integer
+	;pop rdi
+	inc rdx
+	neg rax
+	ret
+
+.parse_uint:
+	call parse_null_terminated_string_to_unsigned_integer
+	ret
+
+
+string_equals:
+	mov rcx, -1
+	.loop:
+		inc rcx
+		mov al, byte[ rdi + rcx ]
+		cmp byte[ rsi + rcx ], al
+		je .equal
+		jmp .return_inequality
+	
+.equal:
+	cmp al, 0
+	je .return_equality
+	jmp .loop
+
+.return_inequality:
+	mov rax, 0
+	ret
+
+.return_equality:
+	mov rax, 1
+	ret
+
+
+string_copy:
+	;rdi, rsi, rdx
+	
+	push rdi
+	push rsi
+	push rdx
+	
+	call string_length
+	
+	pop rdx
+	pop rsi
+	pop rdi
+	
+	inc rax
+
+
+
+
+	cmp rax, rdx
+	jge .return_failure
+	;dec rax
+
+
+	.loop:
+		dec rax
+		mov cl, byte[ rdi + rax ]
+		mov byte[ rsi + rax ], cl
+
+		
+
+		
+
+		cmp rax, 0
+		je .return_success
+		jmp .loop
+.return_failure:
+	mov rax, 0
+	ret
+	
+.return_success:
+	mov rax, 1
+	ret
+	
+; calee-saved: rbx, rbp, rsp, r12-r15
+; caller-saved all outher
