@@ -287,27 +287,16 @@ string_copy:
 	pop rdi
 	
 	inc rax
-
-
-
-
 	cmp rax, rdx
 	jge .return_failure
-	;dec rax
-
-
 	.loop:
 		dec rax
 		mov cl, byte[ rdi + rax ]
 		mov byte[ rsi + rax ], cl
-
-		
-
-		
-
 		cmp rax, 0
 		je .return_success
 		jmp .loop
+
 .return_failure:
 	mov rax, 0
 	ret
@@ -315,6 +304,6 @@ string_copy:
 .return_success:
 	mov rax, 1
 	ret
-	
+
 ; calee-saved: rbx, rbp, rsp, r12-r15
 ; caller-saved all outher
