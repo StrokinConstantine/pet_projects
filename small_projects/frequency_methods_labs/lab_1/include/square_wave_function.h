@@ -1,16 +1,17 @@
-#ifndef FREQUENCY_METHODS_LAB_1_PERIODIC_ABSOLUTE_VALUE_FUNCTION_H
-#define FREQUENCY_METHODS_LAB_1_PERIODIC_ABSOLUTE_VALUE_FUNCTION_H
+#ifndef FREQUENCY_METHODS_LAB_1_SQUARE_WAVE_FUNCTION_H
+#define FREQUENCY_METHODS_LAB_1_SQUARE_WAVE_FUNCTION_H
 
 #include <function.h>
 #include <complex>
 
+
 namespace frequency_methods_lab_1
 {
-	class periodic_absolute_value : public function
+	class square_wave : public function
 	{
 	public:
 	
-		periodic_absolute_value( int_fast32_t n ) : function( n ) { }
+		square_wave( int_fast32_t n ) : function( n ) { }
 	
 		std::complex<double> value( const std::complex<double>& argument ) const final;
 		std::complex<double> fourier_series_coefficient_a_0(  ) const final;
@@ -26,4 +27,4 @@ namespace frequency_methods_lab_1
 	
 } // namespace frequency_methods_lab_1
 
-#endif // FREQUENCY_METHODS_LAB_1_PERIODIC_ABSOLUTE_VALUE_FUNCTION_H
+#endif // FREQUENCY_METHODS_LAB_1_SQUARE_WAVE_FUNCTION_H

@@ -1,7 +1,5 @@
-#include <periodic_absolute_value_function.h>
-
+#include <cube_function.h>
 #include <constants.h>
-
 #include <complex>
 
 
@@ -9,7 +7,7 @@ namespace frequency_methods_lab_1
 {
 	
 
-	std::complex<double> periodic_absolute_value::value( const std::complex<double>& argument ) const
+	std::complex<double> cube::value( const std::complex<double>& argument ) const
 	{
 		double normalized_argument = fmod( argument.real(), 2.0 * PI );
 	if ( normalized_argument > PI ) 
@@ -19,30 +17,30 @@ namespace frequency_methods_lab_1
     return fabs( normalized_argument ); 
 	}
 	
-	std::complex<double> periodic_absolute_value::fourier_series_coefficient_a_0(  ) const
+	std::complex<double> cube::fourier_series_coefficient_a_0(  ) const
 	{
 		return std::complex( PI, 0.0 );
 	}
 	
-	std::complex<double> periodic_absolute_value::fourier_series_coefficient_a_n( uint_fast32_t n ) const
+	std::complex<double> cube::fourier_series_coefficient_a_n( uint_fast32_t n ) const
 	{
 		if ( ( n % 2u ) == 0 ) return std::complex( 0.0, 0.0 );
 		return std::complex( ( -4.0 / ( static_cast<double>( n*n )* PI ) ), 0.0 );
 	}
 	
-	std::complex<double> periodic_absolute_value::fourier_series_coefficient_b_n( uint_fast32_t n ) const
+	std::complex<double> cube::fourier_series_coefficient_b_n( uint_fast32_t n ) const
 	{
 		return std::complex( 0.0, 0.0 );
 	}
 	
-	std::complex<double> periodic_absolute_value::fourier_series_coefficient_c_n( int_fast32_t n ) const
+	std::complex<double> cube::fourier_series_coefficient_c_n( int_fast32_t n ) const
 	{
 		if ( n == 0 ) return std::complex( PI / 2.0, 0.0 );
 		if ( ( n % 2 ) == 0 ) return std::complex( 0.0, 0.0 );
 		return std::complex( ( -2.0 / ( static_cast<double>( n*n )* PI ) ), 0.0 );
 	}
 	
-	std::complex<double> periodic_absolute_value::sum_of_fourier_series( double argument ) const
+	std::complex<double> cube::sum_of_fourier_series( double argument ) const
 	{
 		std::complex<double> sum(0.0, 0.0);
 		for ( uint_fast32_t i = 1; i <= number_of_terms_in_fourier_series; ++i )
@@ -54,7 +52,7 @@ namespace frequency_methods_lab_1
 		return sum;
 	}
 	
-	std::complex<double> periodic_absolute_value::sum_of_fourier_series_in_complex_form( double argument ) const
+	std::complex<double> cube::sum_of_fourier_series_in_complex_form( double argument ) const
 	{
 		std::complex<double> sum(0.0, 0.0);
 		const std::complex<double> imaginary_unit(0.0, 1.0);
