@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdint>
 #include <cmath>
-
+#include <algorithm>
 
 
 double test_function_1( double x )
@@ -32,6 +32,58 @@ double test_function_5( double x )
 
 
 
+double parabola(double a, double b, double (*f) (double), double epsilon, double n )
+{
+	double f_a = f(a);
+	double f_b = f(b);
+	
+	double c = (a + b) / 2;
+	
+	double f_c = f(c);
+
+	for (int i = 1; i < n; ++i)
+	{
+		double u = c - ((c - a) * (c - a) * (f(c) - f(b)) - (c - b) * (c - b) * (f(c) - f(a)))
+			/ (2 * ((c - a) * (f(c) - f(b)) - (c - b) * (f(c) - f(a))));
+		if (c == b)
+			u = b;
+			
+		std::cout << "a: " << a << std::endl;
+		std::cout << "c: " << c << std::endl;
+		std::cout << "b: " << b << std::endl;
+		std::cout << "u: " << u << std::endl;
+		double f_u = f(u);
+		if (f_u < f_c && u < c)
+		{
+			b = c;
+			f_b = f_c;
+			c = u;
+			f_c = f_u;
+		} else if (f_u > f_c && u < c)
+		{
+			a = u;
+			f_a = f_u;
+		} else if (f_u < f_c && u > c)
+		{
+			a = c;
+			f_a = f_c;
+			c = u;
+			f_c = f_u;
+		} else 
+		{
+			b = u;
+			f_b = f_u;
+		}
+		if (std::fabs(a - c) < epsilon)
+		{
+			return std::min(a, b);
+		}
+		
+		std::cout << a << " " << b << std::endl;
+	}
+
+	return 0.0;
+}
 
 
 
@@ -42,7 +94,6 @@ double gr( double a, double b, double (*f)( double ) )
 {
 	static const double k = 0.61803398875;
 	static uint16_t N = 0;
-	
 	
 	while ( true )
 	{
@@ -74,6 +125,9 @@ double f( double x )
 int main()
 {
 	
-	std::cout << gr( 1.0, 100.0, &f ) << std::endl;
+	// std::cout << gr( 1.0, 100.0, &f ) << std::endl;
+	
+	
+	std::cout << parabola( 1.0, 100.0, &f, 0.0001, 100) << std::endl;
 	
 }
