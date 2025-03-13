@@ -52,10 +52,7 @@ double parabola(double a, double b, double (*f) (double), double epsilon, uint_f
 		if (c == b)
 			u = b;
 			
-	//	std::cout << "a: " << a << std::endl;
-		//std::cout << "c: " << c << std::endl;
-		//std::cout << "b: " << b << std::endl;
-		//std::cout << "u: " << u << std::endl;
+
 		double f_u = f(u);
 		if (f_u < f_c && u < c)
 		{
@@ -83,7 +80,7 @@ double parabola(double a, double b, double (*f) (double), double epsilon, uint_f
 			return std::min(a, b);
 		}
 		
-		//std::cout << a << " " << b << std::endl;
+
 	}
 
 	return 0.0;
@@ -125,7 +122,7 @@ double f( double x )
 int main()
 {
 	
-	// std::cout << gr( 1.0, 100.0, &f ) << std::endl;
+	
 	
 	
 	std::cout << parabola(1.0, 100.0, &f, 0.0001, 100) << std::endl;
