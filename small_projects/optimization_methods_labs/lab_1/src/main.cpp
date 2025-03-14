@@ -113,7 +113,6 @@ double gr( double a, double b, double (*f)( double ) )
 	return 0.0;
 }
 
-
 double f( double x )
 {
 	return x * x - 3 * x + 2;
@@ -121,8 +120,6 @@ double f( double x )
 
 int main()
 {
-	
-	
 	
 	
 	std::cout << parabola(1.0, 100.0, &f, 0.0001, 100) << std::endl;
@@ -146,7 +143,7 @@ int main()
 	
 	for (uint_fast32_t i = 0; i < N; ++i)
 	{
-		// parabola(1.0, 100.0, &f, epsilon, i);
+
 		
 		err[i] =  (parabola(1.0, 100.0, &f, epsilon, i) - 1.5);
 		std::cout << err[i];
